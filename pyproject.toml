@@ -1,0 +1,35 @@
+[project]
+name = "tranespotting"
+version = "0.1.0"
+description = "Reverse engineering tools for Trane ComfortLink II protocol"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "pyserial>=3.5",
+    "click>=8.0",
+    "rich>=13.0",
+    "hexdump>=3.3",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+    "ruff>=0.1.0",
+]
+analysis = [
+    "pandas>=2.0",
+    "matplotlib>=3.7",
+]
+
+[project.scripts]
+cl2-capture = "tools.capture:main"
+cl2-analyze = "tools.analyze:main"
+cl2-replay = "tools.replay:main"
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
