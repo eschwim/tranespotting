@@ -1,0 +1,47 @@
+# Trane ComfortLink II Protocol Capture Configuration
+# Copy this file to config.yaml and adjust for your setup
+
+serial:
+  # Serial port for your RS-485 adapter
+  # Linux: /dev/ttyUSB0, /dev/ttyACM0
+  # macOS: /dev/tty.usbserial-*
+  # Windows: COM3
+  port: /dev/ttyUSB0
+
+  # Baud rate - measure with oscilloscope if unknown
+  # Common HVAC rates: 9600, 19200, 38400
+  baud_rate: 19200
+
+  # Serial settings (typical for RS-485)
+  data_bits: 8
+  parity: "none"  # none, even, odd
+  stop_bits: 1
+
+  # Timeout in seconds for read operations
+  timeout: 1.0
+
+capture:
+  # Directory to store capture files
+  output_dir: ./captures/raw
+
+  # File rotation settings
+  rotate_size_mb: 10
+  max_files: 100
+
+  # Include timestamps in capture
+  timestamp: true
+
+  # Log raw hex bytes
+  raw_hex: true
+
+analysis:
+  # Known device addresses (update as you discover them)
+  known_devices:
+    # Format: address: description
+    # 0x2001: "Thermostat"
+    # 0x4001: "Air Handler"
+
+  # Packet structure (Net485 standard)
+  header_size: 10
+  max_payload_size: 240
+  checksum_size: 2
