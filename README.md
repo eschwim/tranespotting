@@ -102,6 +102,18 @@ You'll need custom hardware. Options:
    pip install -e ".[hardware]"
    python -m tools.hardware.enviracom_schematic --format png
    ```
+4. **Generate PCB manufacturing files** (Gerber, BOM, etc.):
+   ```bash
+   # Install cuflow dependencies
+   pip install -e ".[pcb]"
+
+   # Clone cuflow (not available on PyPI)
+   git clone https://github.com/jamesbowman/cuflow.git /tmp/cuflow
+   export PYTHONPATH="/tmp/cuflow:$PYTHONPATH"
+
+   # Generate PCB files
+   python -m tools.hardware.enviracom_pcb
+   ```
 
 ### Step 3: Analyze Captures
 
@@ -128,6 +140,7 @@ python -m tools.analyze capture.bin --packet 42
 | `tools/packet.py` | Packet parser library |
 | `tools/hardware/enviracom_schematic.py` | Generate EnviraCOM interface circuit diagrams |
 | `tools/hardware/enviracom_interface.py` | EnviraCOM interface BOM and pinout |
+| `tools/hardware/enviracom_pcb.py` | Generate PCB layout and Gerber files (via cuflow) |
 
 ## Project Structure
 

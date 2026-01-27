@@ -109,6 +109,21 @@ python -m tools.hardware.enviracom_schematic --format svg  # or png
 
 Output files are saved to `docs/hardware/generated/`.
 
+Generate PCB manufacturing files (Gerber, BOM, pick-and-place):
+```bash
+# Install cuflow dependencies
+pip install -e ".[pcb]"
+
+# Clone cuflow (not available on PyPI)
+git clone https://github.com/jamesbowman/cuflow.git /tmp/cuflow
+export PYTHONPATH="/tmp/cuflow:$PYTHONPATH"
+
+# Generate PCB files
+python -m tools.hardware.enviracom_pcb
+```
+
+PCB files are saved to `docs/hardware/generated/pcb/`. These can be sent directly to PCB manufacturers (JLCPCB, PCBWay, OSHPark, etc.).
+
 **Option 3: Microcontroller Interface**
 
 Use an ESP32 or Arduino with:

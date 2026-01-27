@@ -26,12 +26,20 @@ hardware = [
     "schemdraw>=0.18",
     "matplotlib>=3.7",
 ]
+pcb = [
+    # Note: cuflow itself must be installed manually (see tools/hardware/enviracom_pcb.py)
+    # These are cuflow's runtime dependencies:
+    "pillow>=9.0",
+    "svgwrite>=1.4",
+    "shapely>=2.0",
+]
 
 [project.scripts]
 cl2-capture = "tools.capture:main"
 cl2-analyze = "tools.analyze:main"
 cl2-replay = "tools.replay:main"
 cl2-circuit = "tools.hardware.enviracom_interface:main"
+cl2-pcb = "tools.hardware.enviracom_pcb:main"
 
 [tool.setuptools.packages.find]
 include = ["tools*"]
