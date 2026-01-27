@@ -26,6 +26,9 @@ captures/raw/*.bin
 captures/parsed/*.txt
 captures/parsed/*.csv
 
+# Generated PCB files (can be regenerated)
+docs/hardware/generated/pcb/
+
 # Keep directory structure
 !captures/raw/.gitkeep
 !captures/parsed/.gitkeep
