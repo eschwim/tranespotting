@@ -23,6 +23,8 @@ analysis = [
 ]
 hardware = [
     "skidl>=2.0",
+    "schemdraw>=0.18",
+    "matplotlib>=3.7",
 ]
 
 [project.scripts]
@@ -30,6 +32,9 @@ cl2-capture = "tools.capture:main"
 cl2-analyze = "tools.analyze:main"
 cl2-replay = "tools.replay:main"
 cl2-circuit = "tools.hardware.enviracom_interface:main"
+
+[tool.setuptools.packages.find]
+include = ["tools*"]
 
 [tool.ruff]
 line-length = 100
