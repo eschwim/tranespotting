@@ -21,11 +21,15 @@ analysis = [
     "pandas>=2.0",
     "matplotlib>=3.7",
 ]
+hardware = [
+    "skidl>=2.0",
+]
 
 [project.scripts]
 cl2-capture = "tools.capture:main"
 cl2-analyze = "tools.analyze:main"
 cl2-replay = "tools.replay:main"
+cl2-circuit = "tools.hardware.enviracom_interface:main"
 
 [tool.ruff]
 line-length = 100
