@@ -53,6 +53,9 @@ pip install -e ".[dev]"
 
 # For analysis tools (pandas, matplotlib)
 pip install -e ".[analysis]"
+
+# For hardware design tools (circuit schematics)
+pip install -e ".[hardware]"
 ```
 
 ### Step 1: Identify Physical Layer
@@ -90,8 +93,15 @@ python -m tools.capture -p /dev/ttyUSB0 -b <detected_baud>
 
 You'll need custom hardware. Options:
 1. **Find a W8735A Serial Adapter** (discontinued 2013, check eBay)
-2. **Build an interface circuit** - See `docs/protocol/enviracom_physical.md`
-3. **Use a microcontroller** (ESP32/Arduino) with zero-crossing detection
+2. **Build the DIY interface circuit** - See [`docs/hardware/enviracom_interface.md`](docs/hardware/enviracom_interface.md)
+   - Complete schematic with BOM (~$15 in parts)
+   - Uses H11AA1 + 4N35 optocouplers for isolation
+   - ESP32/Arduino compatible
+3. **Generate circuit diagrams**:
+   ```bash
+   pip install -e ".[hardware]"
+   python -m tools.hardware.enviracom_schematic --format png
+   ```
 
 ### Step 3: Analyze Captures
 
@@ -116,6 +126,8 @@ python -m tools.analyze capture.bin --packet 42
 | `tools/baudrate_detect.py` | Auto-detect RS-485 baud rate |
 | `tools/signal_analyze.py` | Analyze oscilloscope/logic analyzer captures |
 | `tools/packet.py` | Packet parser library |
+| `tools/hardware/enviracom_schematic.py` | Generate EnviraCOM interface circuit diagrams |
+| `tools/hardware/enviracom_interface.py` | EnviraCOM interface BOM and pinout |
 
 ## Project Structure
 

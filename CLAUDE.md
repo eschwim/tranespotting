@@ -22,8 +22,9 @@ python -m tools.baudrate_detect -p /dev/ttyUSB0       # Auto-detect baud rate
 python -m tools.signal_analyze capture.csv            # Classify physical layer
 
 # Hardware design (EnviraCOM interface circuit)
-python -m tools.hardware.enviracom_interface --svg    # Generate SVG schematic
-python -m tools.hardware.enviracom_interface --netlist # Generate KiCad netlist
+python -m tools.hardware.enviracom_schematic --format svg  # Generate SVG schematics
+python -m tools.hardware.enviracom_schematic --format png  # Generate PNG schematics
+python -m tools.hardware.enviracom_interface --bom         # Print bill of materials
 
 # Tests
 pytest                        # Run all tests
@@ -53,7 +54,9 @@ Tools in this repo primarily target RS-485. EnviraCOM requires the discontinued 
 
 - **`tools/analyze.py`**: Loads captures, extracts address/message type statistics, finds repeating patterns.
 
-- **`tools/hardware/enviracom_interface.py`**: SKiDL circuit definition for DIY EnviraCOM interface. Generates SVG schematics and KiCad netlists for PCB fabrication.
+- **`tools/hardware/enviracom_interface.py`**: SKiDL circuit definition for DIY EnviraCOM interface. Prints BOM and pinout information.
+
+- **`tools/hardware/enviracom_schematic.py`**: Schemdraw-based schematic generator. Creates SVG/PNG circuit diagrams for the EnviraCOM interface.
 
 ### Key Protocol Details
 

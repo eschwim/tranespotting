@@ -93,7 +93,21 @@ You need to build circuitry that:
 3. Handles dominant/recessive arbitration
 4. Optionally derives power from 24VAC
 
-See `docs/protocol/enviracom_physical.md` for circuit details.
+**This project includes a complete DIY interface design!**
+
+See [`enviracom_interface.md`](enviracom_interface.md) for:
+- Complete circuit schematic with component values
+- Bill of materials (~$15 in parts)
+- Connector pinouts
+- Example microcontroller code
+
+Generate circuit diagrams:
+```bash
+pip install -e ".[hardware]"
+python -m tools.hardware.enviracom_schematic --format svg  # or png
+```
+
+Output files are saved to `docs/hardware/generated/`.
 
 **Option 3: Microcontroller Interface**
 
