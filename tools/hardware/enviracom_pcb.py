@@ -341,6 +341,153 @@ def create_footprints(dip_module):
             dc.silko()
             dc.pop()
 
+    class SOIC16(dip_module.PTH):
+        """SOIC-16 package for CH340G USB-to-serial chip."""
+
+        family = "U"
+        footprint = "SOIC-16"
+        # Note: This is a SMD part but we're using PTH base for simplicity
+        # In production, you'd want proper SMD pad definitions
+
+        def place(self, dc):
+            # SOIC-16: 1.27mm pitch, 7.5mm body width
+            pitch = 1.27
+            row_spacing = 5.3  # Between pad centers
+
+            # Place pins: 1-8 on left, 9-16 on right (bottom to top on right)
+            for i in range(8):
+                # Left side (pins 1-8)
+                dc.push()
+                dc.forward(i * pitch)
+                dc.left(90)
+                dc.forward(row_spacing / 2)
+                self.gh(dc)
+                self.pads[-1].setname(str(i + 1))
+                dc.pop()
+
+                # Right side (pins 16, 15, 14... counting down)
+                dc.push()
+                dc.forward(i * pitch)
+                dc.right(90)
+                dc.forward(row_spacing / 2)
+                self.gh(dc)
+                self.pads[-1].setname(str(16 - i))
+                dc.pop()
+
+            # Outline
+            dc.push()
+            dc.left(90)
+            dc.forward(row_spacing / 2 + 1)
+            dc.left(90)
+            dc.forward(pitch / 2)
+            dc.newpath()
+            w = pitch * 7 + 1
+            h = row_spacing + 2
+            for _ in range(2):
+                dc.forward(w)
+                dc.left(90)
+                dc.forward(h)
+                dc.left(90)
+            dc.silko()
+            dc.pop()
+
+    class USBMicroB(dip_module.PTH):
+        """USB Micro-B connector footprint."""
+
+        family = "J"
+        footprint = "USB-MICRO-B"
+
+        def place(self, dc):
+            # Simplified USB Micro-B: 5 signal pins + 2 shield pins
+            # Standard 0.65mm pitch for signal pins
+            pitch = 0.65
+
+            pin_names = ["VBUS", "D-", "D+", "ID", "GND"]
+            for i, name in enumerate(pin_names):
+                dc.push()
+                dc.left(90)
+                dc.forward((i - 2) * pitch)
+                self.gh(dc)
+                self.pads[-1].setname(name)
+                dc.pop()
+
+            # Shield/mounting holes (larger)
+            for side in [-1, 1]:
+                dc.push()
+                dc.left(90)
+                dc.forward(side * 3.5)
+                dc.forward(2)  # Offset forward
+                self.gh(dc, radius=0.8)
+                self.pads[-1].setname("SHIELD")
+                dc.pop()
+
+            # Outline
+            dc.push()
+            dc.forward(3)
+            dc.left(90)
+            dc.forward(4)
+            dc.newpath()
+            w = 6
+            h = 8
+            dc.left(90)
+            for _ in range(2):
+                dc.forward(w)
+                dc.left(90)
+                dc.forward(h)
+                dc.left(90)
+            dc.silko()
+            dc.pop()
+
+        def gh(self, dc, radius=0.5):
+            """Create through-hole with custom radius for SMD/THT hybrid."""
+            dc.board.hole(dc.xy, radius, None)
+            p = dc.copy()
+            p.n_agon(radius + 0.3, 6)
+            p.contact()
+            p.part = self.id
+            self.pads.append(p)
+
+    class Capacitor0805(dip_module.PTH):
+        """0805 SMD capacitor (using THT holes for hand soldering)."""
+
+        family = "C"
+        footprint = "0805"
+
+        def place(self, dc):
+            # 0805: 2mm body, use 2.5mm spacing for THT conversion
+            spacing = 2.5
+
+            dc.push()
+            dc.left(90)
+            dc.forward(spacing / 2)
+            self.gh(dc)
+            self.pads[-1].setname("1")
+            dc.pop()
+
+            dc.push()
+            dc.right(90)
+            dc.forward(spacing / 2)
+            self.gh(dc)
+            self.pads[-1].setname("2")
+            dc.pop()
+
+            # Body outline
+            dc.push()
+            dc.forward(1)
+            dc.left(90)
+            dc.forward(1)
+            dc.newpath()
+            w = 2
+            h = 2
+            dc.left(90)
+            for _ in range(2):
+                dc.forward(w)
+                dc.left(90)
+                dc.forward(h)
+                dc.left(90)
+            dc.silko()
+            dc.pop()
+
     return {
         'DIP6': DIP6,
         'TO92': TO92,
@@ -348,6 +495,9 @@ def create_footprints(dip_module):
         'Diode': Diode,
         'ScrewTerminal3': ScrewTerminal3,
         'PinHeader5': PinHeader5,
+        'SOIC16': SOIC16,
+        'USBMicroB': USBMicroB,
+        'Capacitor0805': Capacitor0805,
     }
 
 
@@ -441,11 +591,118 @@ def create_enviracom_pcb(cu, footprints):
     return brd
 
 
-def generate_outputs(brd, output_dir: Path, formats: list, svgout_module):
+# USB Board parameters (slightly larger to accommodate USB circuitry)
+USB_BOARD_WIDTH = 70.0  # mm
+USB_BOARD_HEIGHT = 50.0  # mm
+
+
+def create_enviracom_usb_pcb(cu, footprints):
+    """Create the EnviraCOM interface PCB with USB connectivity."""
+
+    DIP6 = footprints['DIP6']
+    TO92 = footprints['TO92']
+    Axial = footprints['Axial']
+    Diode = footprints['Diode']
+    ScrewTerminal3 = footprints['ScrewTerminal3']
+    SOIC16 = footprints['SOIC16']
+    USBMicroB = footprints['USBMicroB']
+    Capacitor0805 = footprints['Capacitor0805']
+
+    # Create board with design rules
+    brd = cu.Board(
+        size=(USB_BOARD_WIDTH, USB_BOARD_HEIGHT),
+        trace=TRACE_SIGNAL,
+        space=TRACE_SIGNAL * 1.2,
+        via_hole=0.3,
+        via=0.6,
+        via_space=0.5,
+        silk=0.2
+    )
+
+    # === COMPONENT PLACEMENT ===
+
+    # HVAC Side (left side of board) - 24VAC isolated section
+    hvac_x = 10
+
+    # J1: HVAC screw terminal (R, C, D)
+    j1 = ScrewTerminal3(brd.DC((hvac_x, USB_BOARD_HEIGHT / 2)).right(90), val="HVAC")
+
+    # U1: H11AA1 Zero-crossing detector
+    u1 = DIP6(brd.DC((hvac_x + 15, USB_BOARD_HEIGHT - 12)), val="H11AA1")
+
+    # U2: 4N35 Data receive optocoupler
+    u2 = DIP6(brd.DC((hvac_x + 15, USB_BOARD_HEIGHT / 2)), val="4N35")
+
+    # U3: 4N35 Data transmit optocoupler
+    u3 = DIP6(brd.DC((hvac_x + 15, 12)), val="4N35")
+
+    # Q1: 2N7000 MOSFET for TX
+    q1 = TO92(brd.DC((hvac_x + 5, 10)).right(90), val="2N7000")
+
+    # Resistors - HVAC side
+    r1 = Axial(brd.DC((hvac_x + 8, USB_BOARD_HEIGHT - 8)), val="100k", spacing=10)
+    r2 = Axial(brd.DC((hvac_x + 8, USB_BOARD_HEIGHT - 14)), val="100k", spacing=10)
+    r4 = Axial(brd.DC((hvac_x + 8, USB_BOARD_HEIGHT / 2 + 5)), val="47k", spacing=10)
+    r5 = Axial(brd.DC((hvac_x + 8, USB_BOARD_HEIGHT / 2 - 1)), val="10k", spacing=10)
+    r6 = Axial(brd.DC((hvac_x + 8, USB_BOARD_HEIGHT / 2 - 7)), val="1k", spacing=10)
+    r10 = Axial(brd.DC((hvac_x + 3, 18)), val="22R 1W", spacing=12)
+
+    # D1: Zener diode
+    d1 = Diode(brd.DC((hvac_x + 3, USB_BOARD_HEIGHT / 2 - 4)), val="5.1V", spacing=7.5)
+
+    # D2: Flyback diode
+    d2 = Diode(brd.DC((hvac_x + 10, 8)), val="1N4148", spacing=7.5)
+
+    # USB Side (right side of board) - 5V USB section
+    usb_x = USB_BOARD_WIDTH - 15
+
+    # J2: USB Micro-B connector (at board edge)
+    j2 = USBMicroB(brd.DC((USB_BOARD_WIDTH - 5, USB_BOARD_HEIGHT / 2)).left(90), val="USB")
+
+    # U4: CH340G USB-to-Serial chip
+    u4 = SOIC16(brd.DC((usb_x - 5, USB_BOARD_HEIGHT / 2)), val="CH340G")
+
+    # Decoupling capacitors for CH340G
+    c1 = Capacitor0805(brd.DC((usb_x - 5, USB_BOARD_HEIGHT - 8)), val="100nF")
+    c2 = Capacitor0805(brd.DC((usb_x - 10, USB_BOARD_HEIGHT - 8)), val="10uF")
+
+    # Resistors - USB side (pullups and current limiters)
+    r3 = Axial(brd.DC((usb_x - 12, USB_BOARD_HEIGHT - 12)), val="10k", spacing=10)
+    r7 = Axial(brd.DC((usb_x - 12, USB_BOARD_HEIGHT / 2 + 5)), val="10k", spacing=10)
+    r8 = Axial(brd.DC((usb_x - 12, 15)), val="330R", spacing=10)
+    r9 = Axial(brd.DC((usb_x - 12, 8)), val="10k", spacing=10)
+
+    # USB data line resistors (optional EMI filtering)
+    r11 = Axial(brd.DC((usb_x, USB_BOARD_HEIGHT / 2 + 8)), val="22R", spacing=7.5)
+    r12 = Axial(brd.DC((usb_x, USB_BOARD_HEIGHT / 2 - 8)), val="22R", spacing=7.5)
+
+    # Polyfuse for USB power protection
+    f1 = Axial(brd.DC((usb_x, USB_BOARD_HEIGHT - 5)), val="500mA PTC", spacing=10)
+    f1.family = "F"
+
+    # === ISOLATION BARRIER ===
+    barrier_x = USB_BOARD_WIDTH / 2 - 5
+    dc = brd.DC((barrier_x, 5))
+    dc.newpath()
+    barrier_width = 0.5
+    barrier_height = USB_BOARD_HEIGHT - 10
+    dc.forward(barrier_height)
+    dc.left(90)
+    dc.forward(barrier_width)
+    dc.left(90)
+    dc.forward(barrier_height)
+    dc.left(90)
+    dc.forward(barrier_width)
+    dc.silko()
+
+    return brd
+
+
+def generate_outputs(brd, output_dir: Path, formats: list, svgout_module, basename_prefix="enviracom_interface"):
     """Generate PCB manufacturing outputs."""
 
     output_dir.mkdir(parents=True, exist_ok=True)
-    basename = str(output_dir / "enviracom_interface")
+    basename = str(output_dir / basename_prefix)
 
     generated = []
 
@@ -453,34 +710,34 @@ def generate_outputs(brd, output_dir: Path, formats: list, svgout_module):
         print("Generating Gerber files...")
         brd.save(basename)
         generated.extend([
-            "enviracom_interface.GTL (Top Copper)",
-            "enviracom_interface.GBL (Bottom Copper)",
-            "enviracom_interface.GTS (Top Soldermask)",
-            "enviracom_interface.GBS (Bottom Soldermask)",
-            "enviracom_interface.GTO (Top Silkscreen)",
-            "enviracom_interface.GBO (Bottom Silkscreen)",
-            "enviracom_interface.DRL (Drill file)",
+            f"{basename_prefix}.GTL (Top Copper)",
+            f"{basename_prefix}.GBL (Bottom Copper)",
+            f"{basename_prefix}.GTS (Top Soldermask)",
+            f"{basename_prefix}.GBS (Bottom Soldermask)",
+            f"{basename_prefix}.GTO (Top Silkscreen)",
+            f"{basename_prefix}.GBO (Bottom Silkscreen)",
+            f"{basename_prefix}.DRL (Drill file)",
         ])
         print(f"  Gerber files saved to {output_dir}/")
 
     if "bom" in formats or "all" in formats:
         print("Generating BOM...")
         brd.bom(basename)
-        generated.append("enviracom_interface_BOM.csv")
-        print(f"  BOM saved to {basename}_BOM.csv")
+        generated.append(f"{basename_prefix}-bom.csv")
+        print(f"  BOM saved to {basename}-bom.csv")
 
     if "pnp" in formats or "all" in formats:
         print("Generating pick-and-place...")
         brd.pnp(basename)
-        generated.append("enviracom_interface_PNP.csv")
-        print(f"  PnP saved to {basename}_PNP.csv")
+        generated.append(f"{basename_prefix}-pnp.csv")
+        print(f"  PnP saved to {basename}-pnp.csv")
 
     if "svg" in formats or "all" in formats:
         if svgout_module:
             print("Generating SVG preview...")
             try:
                 svgout_module.write(brd, basename + ".svg")
-                generated.append("enviracom_interface.svg")
+                generated.append(f"{basename_prefix}.svg")
                 print(f"  SVG saved to {basename}.svg")
             except (IndexError, Exception) as e:
                 print(f"  Warning: SVG generation failed: {e}")
@@ -509,6 +766,12 @@ def main():
         help="Output formats to generate (default: all)",
     )
     parser.add_argument(
+        "--variant",
+        choices=["mcu", "usb"],
+        default="mcu",
+        help="Board variant: 'mcu' for pin header, 'usb' for USB connector (default: mcu)",
+    )
+    parser.add_argument(
         "--check",
         action="store_true",
         help="Just check if cuflow is available",
@@ -533,7 +796,16 @@ def main():
 
     print("EnviraCOM Interface PCB Generator")
     print("=" * 40)
-    print(f"Board size: {BOARD_WIDTH}mm x {BOARD_HEIGHT}mm")
+
+    if args.variant == "usb":
+        print(f"Variant: USB (direct computer connection)")
+        print(f"Board size: {USB_BOARD_WIDTH}mm x {USB_BOARD_HEIGHT}mm")
+        basename_prefix = "enviracom_usb_interface"
+    else:
+        print(f"Variant: MCU header (for ESP32/Arduino)")
+        print(f"Board size: {BOARD_WIDTH}mm x {BOARD_HEIGHT}mm")
+        basename_prefix = "enviracom_interface"
+
     print(f"Isolation gap: {ISOLATION_GAP}mm")
     print()
 
@@ -541,10 +813,13 @@ def main():
     footprints = create_footprints(dip)
 
     print("Creating PCB layout...")
-    brd = create_enviracom_pcb(cu, footprints)
+    if args.variant == "usb":
+        brd = create_enviracom_usb_pcb(cu, footprints)
+    else:
+        brd = create_enviracom_pcb(cu, footprints)
 
     print()
-    generated = generate_outputs(brd, args.output_dir, args.format, svgout)
+    generated = generate_outputs(brd, args.output_dir, args.format, svgout, basename_prefix)
 
     print()
     print("Generated files:")

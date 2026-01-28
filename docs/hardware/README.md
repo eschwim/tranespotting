@@ -118,11 +118,18 @@ pip install -e ".[pcb]"
 git clone https://github.com/jamesbowman/cuflow.git /tmp/cuflow
 export PYTHONPATH="/tmp/cuflow:$PYTHONPATH"
 
-# Generate PCB files
+# Generate PCB files (MCU header version - for ESP32/Arduino)
 python -m tools.hardware.enviracom_pcb
+
+# Generate USB version (direct computer connection via CH340G)
+python -m tools.hardware.enviracom_pcb --variant usb
 ```
 
 PCB files are saved to `docs/hardware/generated/pcb/`. These can be sent directly to PCB manufacturers (JLCPCB, PCBWay, OSHPark, etc.).
+
+**Two PCB variants available:**
+- **MCU variant** (60×45mm): 5-pin header for connecting to ESP32, Arduino, or other MCU
+- **USB variant** (70×50mm): Built-in CH340G USB-to-serial chip for direct computer connection
 
 **Option 3: Microcontroller Interface**
 

@@ -111,8 +111,11 @@ You'll need custom hardware. Options:
    git clone https://github.com/jamesbowman/cuflow.git /tmp/cuflow
    export PYTHONPATH="/tmp/cuflow:$PYTHONPATH"
 
-   # Generate PCB files
+   # Generate PCB files (MCU header version)
    python -m tools.hardware.enviracom_pcb
+
+   # Generate USB version (direct computer connection)
+   python -m tools.hardware.enviracom_pcb --variant usb
    ```
 
 ### Step 3: Analyze Captures
