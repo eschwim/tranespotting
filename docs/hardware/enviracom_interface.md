@@ -2,6 +2,10 @@
 
 A practical interface circuit to connect an ESP32/Arduino to the EnviraCOM 3-wire bus.
 
+> New to electronics? [`build_guide.md`](build_guide.md) walks through this
+> same circuit as numbered point-to-point breadboard steps, with rendered
+> schematic images.
+
 ## Overview
 
 The EnviraCOM bus uses three wires:

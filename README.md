@@ -97,6 +97,8 @@ You'll need custom hardware. Options:
    - Complete schematic with BOM (~$15 in parts)
    - Uses H11AA1 + 4N35 optocouplers for isolation
    - ESP32/Arduino compatible
+   - New to electronics? Follow the step-by-step
+     [build guide](docs/hardware/build_guide.md) instead
 3. **Generate circuit diagrams**:
    ```bash
    pip install -e ".[hardware]"
