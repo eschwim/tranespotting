@@ -139,7 +139,7 @@ class BusCapture:
             self.capture_file.close()
 
         duration = time.time() - self.start_time if self.start_time else 0
-        console.print(f"\n[green]Capture complete![/green]")
+        console.print("\n[green]Capture complete![/green]")
         console.print(f"  Packets: {self.packets_captured}")
         console.print(f"  Bytes: {self.bytes_captured}")
         console.print(f"  Duration: {duration:.1f}s")

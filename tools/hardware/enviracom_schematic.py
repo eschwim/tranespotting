@@ -40,14 +40,12 @@ def draw_zero_crossing_detector():
         # H11AA1 Optocoupler
         opto_x = d.here[0] + 1
         d += elm.Line().right().length(1)
-        led_top = d.here
 
         # LED side (going down): A1 at top (from R1), R2 on A2_K1 leg to AC_COM
         d += elm.Diode().down().label("U1: H11AA1", loc="right", ofst=0.3)
         d += elm.Resistor().down().label("R2", loc="right", ofst=0.1).label("4.7kΩ", loc="left", ofst=0.1)
         d += elm.Line().left().tox(0)
         d += elm.Dot().label("AC_COM", loc="left", ofst=0.2, fontsize=10)
-        ac_com_y = d.here[1]
 
         # Phototransistor side (to the right of LED)
         d += elm.Dot().at((opto_x + 3, 5)).label("VCC", loc="top", ofst=0.15, fontsize=10)
@@ -234,7 +232,6 @@ def draw_full_schematic():
         d += elm.Line().at(ac_hot).right().length(1)
         d += elm.Resistor().right().label("R1", loc="top", ofst=0.05, fontsize=8).label("4.7k", loc="bottom", ofst=0.05, fontsize=8)
         d += elm.Line().right().length(0.3)
-        zc_led_top = d.here
         d += elm.Diode().down().label("U1", loc="right", ofst=0.2, fontsize=8)
         d += elm.Resistor().down().label("R2", loc="right", ofst=0.05, fontsize=8).label("4.7k", loc="left", ofst=0.05, fontsize=8)
         d += elm.Line().left().tox(ac_com[0])
@@ -588,11 +585,8 @@ def draw_full_schematic_usb():
         d += elm.Dot().at((usb_x + 4, 19)).label("VBUS (5V)", loc="right", ofst=0.15, fontsize=9)
         usb_vbus = d.here
         d += elm.Dot().at((usb_x + 4, 17)).label("D-", loc="right", ofst=0.15, fontsize=9)
-        usb_dm = d.here
         d += elm.Dot().at((usb_x + 4, 15)).label("D+", loc="right", ofst=0.15, fontsize=9)
-        usb_dp = d.here
         d += elm.Dot().at((usb_x + 4, 13)).label("GND", loc="right", ofst=0.15, fontsize=9)
-        usb_gnd = d.here
 
         # CH340G chip label
         d += elm.Label().at((usb_x - 2, 18)).label("U4: CH340G", fontsize=10)

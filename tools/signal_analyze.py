@@ -103,8 +103,7 @@ def classify_physical_layer(analysis: dict) -> dict:
     min_width = analysis["min_width_ms"]
     estimated_baud = analysis["estimated_baud"]
 
-    # EnviraCOM: 120 baud = 8.33ms bit period at 60Hz
-    enviracom_bit_period = 8.33  # ms
+    # For reference - EnviraCOM: 120 baud = 8.33ms bit period at 60Hz
 
     # RS-485 common rates
     rs485_rates = {
@@ -252,7 +251,7 @@ def main(input_file: str, time_col: int, data_col: int, threshold: float, ac_fre
         if ac_check["synchronized"]:
             console.print(f"[green]Edges ARE synchronized to {ac_freq}Hz AC[/green]")
         else:
-            console.print(f"[yellow]Edges NOT clearly synchronized to AC[/yellow]")
+            console.print("[yellow]Edges NOT clearly synchronized to AC[/yellow]")
         console.print(f"[dim]Phase variance: {ac_check['phase_variance']:.4f}[/dim]")
 
     # Recommendations
@@ -262,7 +261,7 @@ def main(input_file: str, time_col: int, data_col: int, threshold: float, ac_fre
         console.print("- See docs/protocol/enviracom_physical.md for circuit designs")
         console.print("- Consider looking for a W8735A serial adapter (discontinued)")
     elif classification["classification"] == "RS-485":
-        console.print(f"- Use a USB to RS-485 adapter")
+        console.print("- Use a USB to RS-485 adapter")
         console.print(f"- Try baud rate: {classification.get('estimated_baud', 19200)}")
         console.print("- Run: python -m tools.capture -b <baud_rate>")
     else:

@@ -48,5 +48,10 @@ include = ["tools*"]
 line-length = 100
 target-version = "py310"
 
+[tool.ruff.lint.per-file-ignores]
+# cuflow placement code binds every part to a named local (r1, u2, ...) for
+# readability even though placement happens as a constructor side effect.
+"tools/hardware/enviracom_pcb.py" = ["F841"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]

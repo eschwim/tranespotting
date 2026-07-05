@@ -498,7 +498,7 @@ def main():
     args.output_dir.mkdir(parents=True, exist_ok=True)
 
     print("Creating EnviraCOM interface circuit...")
-    nets = create_enviracom_interface()
+    create_enviracom_interface()
 
     if args.svg or args.all:
         svg_path = args.output_dir / "enviracom_interface.svg"

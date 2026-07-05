@@ -88,7 +88,6 @@ class PacketReplayer:
 
         console.print(f"[yellow]Replaying packets {start} to {end - 1}[/yellow]")
 
-        first_timestamp = self.packets[start][0]
         for i in range(start, end):
             timestamp, data = self.packets[i]
 

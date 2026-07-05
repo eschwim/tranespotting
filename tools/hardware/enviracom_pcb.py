@@ -810,11 +810,11 @@ def main():
     print("=" * 40)
 
     if args.variant == "usb":
-        print(f"Variant: USB (direct computer connection)")
+        print("Variant: USB (direct computer connection)")
         print(f"Board size: {USB_BOARD_WIDTH}mm x {USB_BOARD_HEIGHT}mm")
         basename_prefix = "enviracom_usb_interface"
     else:
-        print(f"Variant: MCU header (for ESP32/Arduino)")
+        print("Variant: MCU header (for ESP32/Arduino)")
         print(f"Board size: {BOARD_WIDTH}mm x {BOARD_HEIGHT}mm")
         basename_prefix = "enviracom_interface"
 
