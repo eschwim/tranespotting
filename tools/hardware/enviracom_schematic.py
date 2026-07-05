@@ -42,14 +42,14 @@ def draw_zero_crossing_detector():
         d += elm.Line().right().length(1)
 
         # LED side (going down): A1 at top (from R1), R2 on A2_K1 leg to AC_COM
-        d += elm.Diode().down().label("U1: H11AA1", loc="right", ofst=0.3)
-        d += elm.Resistor().down().label("R2", loc="right", ofst=0.1).label("4.7kΩ", loc="left", ofst=0.1)
+        d += elm.Diode().down().label("U1: H11AA1", loc="bottom", ofst=0.3)
+        d += elm.Resistor().down().label("R2", loc="bottom", ofst=0.1).label("4.7kΩ", loc="top", ofst=0.1)
         d += elm.Line().left().tox(0)
         d += elm.Dot().label("AC_COM", loc="left", ofst=0.2, fontsize=10)
 
-        # Phototransistor side (to the right of LED)
-        d += elm.Dot().at((opto_x + 3, 5)).label("VCC", loc="top", ofst=0.15, fontsize=10)
-        d += elm.Resistor().down().label("R3", loc="left", ofst=0.2).label("10kΩ", loc="right", ofst=0.2)
+        # Phototransistor side (to the right of LED, clear of the U1 label)
+        d += elm.Dot().at((opto_x + 4.5, 5)).label("VCC", loc="top", ofst=0.15, fontsize=10)
+        d += elm.Resistor().down().label("R3", loc="top", ofst=0.2).label("10kΩ", loc="bottom", ofst=0.2)
         mcu_point = d.here
         d += elm.Dot()
 
@@ -89,7 +89,7 @@ def draw_data_receive():
 
         # Bottom resistor of divider
         d += elm.Line().down().length(0.5)
-        d += elm.Resistor().down().label("R5", loc="left", ofst=0.2).label("1.2kΩ", loc="right", ofst=0.2)
+        d += elm.Resistor().down().label("R5", loc="top", ofst=0.2).label("1.2kΩ", loc="bottom", ofst=0.2)
         d += elm.Line().left().tox(0)
         d += elm.Dot().label("AC_COM", loc="left", ofst=0.2, fontsize=10)
         ac_com_y = d.here[1]
@@ -97,7 +97,7 @@ def draw_data_receive():
         # Zener diode (from divider node, offset to right)
         d += elm.Line().at(div_point).right().length(1)
         zener_top = d.here
-        d += elm.Zener().down().reverse().label("D1", loc="left", ofst=0.2).label("5.1V", loc="right", ofst=0.2)
+        d += elm.Zener().down().reverse().label("D1", loc="top", ofst=0.2).label("5.1V", loc="bottom", ofst=0.2)
         d += elm.Line().down().toy(ac_com_y)
         d += elm.Line().left().tox(0)
 
@@ -108,13 +108,13 @@ def draw_data_receive():
         # 4N35 Optocoupler
         opto_x = d.here[0] + 1
         d += elm.Line().right().length(1)
-        d += elm.Diode().down().label("U2: 4N35", loc="right", ofst=0.3)
+        d += elm.Diode().down().label("U2: 4N35", loc="bottom", ofst=0.3)
         d += elm.Line().down().toy(ac_com_y)
         d += elm.Line().left().tox(0)
 
-        # Phototransistor output side
-        d += elm.Dot().at((opto_x + 3, 6)).label("VCC", loc="top", ofst=0.15, fontsize=10)
-        d += elm.Resistor().down().label("R7", loc="left", ofst=0.2).label("22kΩ", loc="right", ofst=0.2)
+        # Phototransistor output side (clear of the U2 label)
+        d += elm.Dot().at((opto_x + 4.5, 6)).label("VCC", loc="top", ofst=0.15, fontsize=10)
+        d += elm.Resistor().down().label("R7", loc="top", ofst=0.2).label("22kΩ", loc="bottom", ofst=0.2)
         mcu_point = d.here
         d += elm.Dot()
 
@@ -141,7 +141,7 @@ def draw_data_transmit():
         d.config(unit=4, fontsize=11)
 
         # Title
-        d += elm.Label().at((0, 10)).label("Data Transmit Circuit", fontsize=14, halign="left")
+        d += elm.Label().at((0, 12)).label("Data Transmit Circuit", fontsize=14, halign="left")
 
         # MCU TX input (right side, DC)
         d += elm.Dot().at((16, 6)).label("MCU_TX", loc="right", ofst=0.2, fontsize=10)
@@ -151,7 +151,7 @@ def draw_data_transmit():
         # 4N35 Optocoupler LED side
         opto_x = d.here[0] - 1.5
         d += elm.Line().left().length(1.5)
-        d += elm.Diode().down().reverse().label("U3: 4N35", loc="right", ofst=0.3)
+        d += elm.Diode().down().reverse().label("U3: 4N35", loc="bottom", ofst=0.3)
         d += elm.Ground()
 
         # Optocoupler transistor side (AC side) - powered from V_AC, not MCU VCC.
@@ -163,7 +163,7 @@ def draw_data_transmit():
 
         # Gate pull-down resistor - to AC_COM, not MCU GND
         d += elm.Line().down().length(1)
-        d += elm.Resistor().down().label("R9", loc="right", ofst=0.2).label("100kΩ", loc="left", ofst=0.2)
+        d += elm.Resistor().down().label("R9", loc="bottom", ofst=0.2).label("100kΩ", loc="top", ofst=0.2)
         d += elm.Dot().label("AC_COM", loc="left", ofst=0.2, fontsize=9)
 
         # MOSFET - more space to the left
@@ -182,13 +182,13 @@ def draw_data_transmit():
         d += elm.Dot()
 
         # Current limit resistor to DATA
-        d += elm.Resistor().up().label("R10", loc="left", ofst=0.3).label("22Ω", loc="right", ofst=0.3)
+        d += elm.Resistor().up().label("R10", loc="top", ofst=0.3).label("22Ω", loc="bottom", ofst=0.3)
         d += elm.Line().up().length(1)
         d += elm.Dot().label("DATA", loc="top", ofst=0.15, fontsize=10)
 
         # Flyback diode - more horizontal spacing
         d += elm.Line().at(drain_top).right().length(2.5)
-        d += elm.Diode().down().label("D2", loc="right", ofst=0.3)
+        d += elm.Diode().down().label("D2", loc="bottom", ofst=0.3)
         d += elm.Line().down().toy(ac_com_point[1])
         d += elm.Line().left().tox(ac_com_point[0])
 
@@ -229,17 +229,18 @@ def draw_full_schematic():
         d += elm.Label().at((3, 18.5)).label("Zero-Crossing", fontsize=10)
 
         # R1 on hot leg, R2 on common leg (split topology, 4.7k each for ~3.5mA peak)
+        # Diode and R2 lengths chosen so the leg lands exactly on the C terminal row.
         d += elm.Line().at(ac_hot).right().length(1)
         d += elm.Resistor().right().label("R1", loc="top", ofst=0.05, fontsize=8).label("4.7k", loc="bottom", ofst=0.05, fontsize=8)
         d += elm.Line().right().length(0.3)
-        d += elm.Diode().down().label("U1", loc="right", ofst=0.2, fontsize=8)
-        d += elm.Resistor().down().label("R2", loc="right", ofst=0.05, fontsize=8).label("4.7k", loc="left", ofst=0.05, fontsize=8)
+        d += elm.Diode().down().length(2.5).label("U1", loc="bottom", ofst=0.2, fontsize=8)
+        d += elm.Resistor().down().length(2.5).label("R2", loc="bottom", ofst=0.05, fontsize=8).label("4.7k", loc="top", ofst=0.05, fontsize=8)
         d += elm.Line().left().tox(ac_com[0])
 
         # ZC output
-        zc_out_x = 11
+        zc_out_x = 11.5
         d += elm.Dot().at((zc_out_x, ac_hot_y)).label("VCC", loc="top", ofst=0.1, fontsize=9)
-        d += elm.Resistor().down().label("R3", loc="right", ofst=0.15, fontsize=8).label("10k", loc="left", ofst=0.15, fontsize=8)
+        d += elm.Resistor().down().label("R3", loc="bottom", ofst=0.15, fontsize=8).label("10k", loc="top", ofst=0.15, fontsize=8)
         zc_out = d.here
         d += elm.Dot()
         d += elm.Line().down().length(1)
@@ -247,35 +248,33 @@ def draw_full_schematic():
         d += elm.Ground()
 
         # ===== DATA RX SECTION =====
-        d += elm.Label().at((3, 13.5)).label("Data Receive", fontsize=10)
+        d += elm.Label().at((3, 8.3)).label("Data Receive", fontsize=10)
 
         d += elm.Line().at(data).right().length(1)
         d += elm.Resistor().right().label("R4", loc="top", ofst=0.05, fontsize=8).label("4.7k", loc="bottom", ofst=0.05, fontsize=8)
         rx_div = d.here
         d += elm.Dot()
 
-        # Zener
+        # Zener (AC_COM shown as a net label - same node as the C terminal)
         d += elm.Line().right().length(0.5)
-        d += elm.Zener().down().reverse().label("D1", loc="right", ofst=0.15, fontsize=8)
-        d += elm.Line().down().toy(ac_com_y)
-        d += elm.Line().left().tox(ac_com[0])
+        d += elm.Zener().down().reverse().label("D1", loc="bottom", ofst=0.15, fontsize=8)
+        d += elm.Dot().label("AC_COM", loc="bottom", ofst=0.15, fontsize=8)
 
         # Divider bottom
         d += elm.Line().at(rx_div).down().length(0.5)
-        d += elm.Resistor().down().label("R5", loc="right", ofst=0.15, fontsize=8).label("1.2k", loc="left", ofst=0.15, fontsize=8)
-        d += elm.Line().left().tox(ac_com[0])
+        d += elm.Resistor().down().label("R5\n1.2k", loc="top", ofst=0.15, fontsize=8)
+        d += elm.Dot().label("AC_COM", loc="bottom", ofst=0.15, fontsize=8)
 
         # RX LED
-        d += elm.Line().at(rx_div).right().length(2)
+        d += elm.Line().at(rx_div).right().length(1)
         d += elm.Resistor().right().label("R6", loc="top", ofst=0.05, fontsize=8).label("220", loc="bottom", ofst=0.05, fontsize=8)
         d += elm.Line().right().length(0.3)
-        d += elm.Diode().down().label("U2", loc="right", ofst=0.2, fontsize=8)
-        d += elm.Line().down().toy(ac_com_y)
-        d += elm.Line().left().tox(ac_com[0])
+        d += elm.Diode().down().label("U2", loc="bottom", ofst=0.2, fontsize=8)
+        d += elm.Dot().label("AC_COM", loc="bottom", ofst=0.15, fontsize=8)
 
-        # RX output
-        d += elm.Dot().at((zc_out_x, data_y + 5)).label("VCC", loc="top", ofst=0.1, fontsize=9)
-        d += elm.Resistor().down().label("R7", loc="right", ofst=0.15, fontsize=8).label("22k", loc="left", ofst=0.15, fontsize=8)
+        # RX output (offset right of the ZC output column to avoid overlap)
+        d += elm.Dot().at((13.5, data_y + 5)).label("VCC", loc="top", ofst=0.1, fontsize=9)
+        d += elm.Resistor().down().label("R7", loc="bottom", ofst=0.15, fontsize=8).label("22k", loc="top", ofst=0.15, fontsize=8)
         rx_out = d.here
         d += elm.Dot()
         d += elm.Line().down().length(1)
@@ -283,8 +282,8 @@ def draw_full_schematic():
         d += elm.Ground()
 
         # ===== DATA TX SECTION =====
-        d += elm.Label().at((3, 5.5)).label("Data Transmit", fontsize=10)
-        d += elm.Label().at((0, -4)).label("V_AC = 12V AC-side rail from AC_HOT (D3 1N4007 + R11 33k + D4 12V Zener + C1 10µF), referenced to AC_COM", fontsize=8, color="gray", halign="left")
+        d += elm.Label().at((0.5, 1.5)).label("Data Transmit", fontsize=10)
+        d += elm.Label().at((0, -5)).label("AC_COM = C terminal (pin 2 of J1).   V_AC = 12V AC-side rail from AC_HOT (D3 1N4007 + R11 33k + D4 12V Zener + C1 10µF), referenced to AC_COM", fontsize=8, color="gray", halign="left")
 
         # TX LED (from MCU side) - moved right for more space
         tx_mcu_x = 16
@@ -292,7 +291,7 @@ def draw_full_schematic():
         d += elm.Line().left().length(1)
         d += elm.Resistor().left().label("R8", loc="top", ofst=0.05, fontsize=8).label("330", loc="bottom", ofst=0.05, fontsize=8)
         d += elm.Line().left().length(0.5)
-        d += elm.Diode().down().reverse().label("U3", loc="right", ofst=0.2, fontsize=8)
+        d += elm.Diode().down().reverse().label("U3", loc="bottom", ofst=0.2, fontsize=8)
         d += elm.Ground()
 
         # TX transistor output - powered from V_AC (AC-side supply, not MCU VCC)
@@ -302,10 +301,10 @@ def draw_full_schematic():
         d += elm.BjtNpn(circle=True).anchor("collector").scale(0.8)
         tx_gate = d.here
 
-        # R9 pull-down to AC_COM (not MCU GND) to preserve isolation
-        d += elm.Resistor().down().label("R9", loc="right", ofst=0.2, fontsize=8).label("100k", loc="left", ofst=0.2, fontsize=8)
-        d += elm.Line().down().toy(ac_com_y)
-        d += elm.Line().left().tox(ac_com[0])
+        # R9 pull-down to AC_COM (not MCU GND) to preserve isolation.
+        # Label on the left side only - the right side abuts the barrier.
+        d += elm.Resistor().down().label("R9\n100k", loc="top", ofst=0.2, fontsize=8)
+        d += elm.Dot().label("AC_COM", loc="bottom", ofst=0.15, fontsize=8)
 
         # MOSFET - positioned with more clearance
         d += elm.Line().at(tx_gate).left().length(2.5)
@@ -316,19 +315,18 @@ def draw_full_schematic():
         d.push()
         d += elm.Line().at(fet.drain).up().length(1.5)
         drain_node = d.here
-        d += elm.Resistor().up().label("R10", loc="left", ofst=0.2, fontsize=8).label("22Ω", loc="right", ofst=0.2, fontsize=8)
+        d += elm.Resistor().up().label("R10", loc="top", ofst=0.2, fontsize=8).label("22Ω", loc="bottom", ofst=0.2, fontsize=8)
         d += elm.Line().up().toy(data_y)
         d += elm.Line().left().tox(data[0] + 1.5)
 
         # Flyback diode - more horizontal spacing
-        d += elm.Line().at(drain_node).right().length(2.5)
-        d += elm.Diode().down().label("D2", loc="right", ofst=0.25, fontsize=8)
-        d += elm.Line().down().toy(ac_com_y)
-        d += elm.Line().left().tox(ac_com[0])
+        d += elm.Line().at(drain_node).right().length(2)
+        d += elm.Diode().down().label("D2", loc="bottom", ofst=0.25, fontsize=8)
+        d += elm.Dot().label("AC_COM", loc="bottom", ofst=0.15, fontsize=8)
 
         # MOSFET source to AC_COM
-        d += elm.Line().at(fet.source).down().toy(ac_com_y)
-        d += elm.Line().left().tox(ac_com[0])
+        d += elm.Line().at(fet.source).down().length(1)
+        d += elm.Dot().label("AC_COM", loc="bottom", ofst=0.15, fontsize=8)
 
         # ===== MCU CONNECTOR (right side) =====
         d += elm.Label().at((tx_mcu_x, 19)).label("MCU (J2)", fontsize=11, halign="left")
@@ -342,10 +340,11 @@ def draw_full_schematic():
         d += elm.Dot().at((tx_mcu_x, ac_hot_y)).label("1:VCC", loc="right", ofst=0.15, fontsize=9)
         d += elm.Dot().at((tx_mcu_x, 4)).label("2:GND", loc="right", ofst=0.15, fontsize=9)
 
-        # Isolation barrier - positioned between AC and DC sides
-        barrier_x = 11.5
+        # Isolation barrier - runs between the optocoupler LEDs (AC side) and
+        # their phototransistors (MCU side); the packages straddle it.
+        barrier_x = 10.5
         d += elm.Line().at((barrier_x, 20)).down().length(22).linestyle("--").color("red").linewidth(1.5)
-        d += elm.Label().at((barrier_x, -2.5)).label("ISOLATION BARRIER", fontsize=9, color="red")
+        d += elm.Label().at((barrier_x, -3.5)).label("ISOLATION BARRIER", fontsize=9, color="red")
 
         return d
 
@@ -384,7 +383,7 @@ def draw_usb_interface():
 
         # Decoupling cap
         d += elm.Line().down().length(1)
-        d += elm.Capacitor().down().label("C1", loc="right", ofst=0.2).label("100nF", loc="left", ofst=0.2, fontsize=8)
+        d += elm.Capacitor().down().label("C1", loc="bottom", ofst=0.2).label("100nF", loc="top", ofst=0.2, fontsize=8)
         d += elm.Ground()
 
         # VCC to chip
@@ -475,14 +474,14 @@ def draw_full_schematic_usb():
         d += elm.Line().at(ac_hot).right().length(1)
         d += elm.Resistor().right().label("R1", loc="top", ofst=0.05, fontsize=8).label("4.7k", loc="bottom", ofst=0.05, fontsize=8)
         d += elm.Line().right().length(0.3)
-        d += elm.Diode().down().label("U1", loc="right", ofst=0.2, fontsize=8)
-        d += elm.Resistor().down().label("R2", loc="right", ofst=0.05, fontsize=8).label("4.7k", loc="left", ofst=0.05, fontsize=8)
+        d += elm.Diode().down().length(2.5).label("U1", loc="bottom", ofst=0.2, fontsize=8)
+        d += elm.Resistor().down().length(2.5).label("R2", loc="bottom", ofst=0.05, fontsize=8).label("4.7k", loc="top", ofst=0.05, fontsize=8)
         d += elm.Line().left().tox(ac_com[0])
 
-        # ZC output
-        zc_out_x = 11
+        # ZC output (phototransistor side - right of the isolation barrier)
+        zc_out_x = 14
         d += elm.Dot().at((zc_out_x, ac_hot_y)).label("VCC", loc="top", ofst=0.1, fontsize=9)
-        d += elm.Resistor().down().label("R3", loc="right", ofst=0.15, fontsize=8).label("10k", loc="left", ofst=0.15, fontsize=8)
+        d += elm.Resistor().down().label("R3", loc="bottom", ofst=0.15, fontsize=8).label("10k", loc="top", ofst=0.15, fontsize=8)
         zc_out = d.here
         d += elm.Dot()
         d += elm.Line().down().length(1)
@@ -490,35 +489,33 @@ def draw_full_schematic_usb():
         d += elm.Ground()
 
         # ===== DATA RX SECTION =====
-        d += elm.Label().at((3, 15.5)).label("Data Receive", fontsize=10)
+        d += elm.Label().at((3, 10.3)).label("Data Receive", fontsize=10)
 
         d += elm.Line().at(data).right().length(1)
         d += elm.Resistor().right().label("R4", loc="top", ofst=0.05, fontsize=8).label("4.7k", loc="bottom", ofst=0.05, fontsize=8)
         rx_div = d.here
         d += elm.Dot()
 
-        # Zener
+        # Zener (AC_COM shown as a net label - same node as the C terminal)
         d += elm.Line().right().length(0.5)
-        d += elm.Zener().down().reverse().label("D1", loc="right", ofst=0.15, fontsize=8)
-        d += elm.Line().down().toy(ac_com_y)
-        d += elm.Line().left().tox(ac_com[0])
+        d += elm.Zener().down().reverse().label("D1", loc="bottom", ofst=0.15, fontsize=8)
+        d += elm.Dot().label("AC_COM", loc="bottom", ofst=0.15, fontsize=8)
 
         # Divider bottom
         d += elm.Line().at(rx_div).down().length(0.5)
-        d += elm.Resistor().down().label("R5", loc="right", ofst=0.15, fontsize=8).label("1.2k", loc="left", ofst=0.15, fontsize=8)
-        d += elm.Line().left().tox(ac_com[0])
+        d += elm.Resistor().down().label("R5\n1.2k", loc="top", ofst=0.15, fontsize=8)
+        d += elm.Dot().label("AC_COM", loc="bottom", ofst=0.15, fontsize=8)
 
         # RX LED
-        d += elm.Line().at(rx_div).right().length(2)
+        d += elm.Line().at(rx_div).right().length(1)
         d += elm.Resistor().right().label("R6", loc="top", ofst=0.05, fontsize=8).label("220", loc="bottom", ofst=0.05, fontsize=8)
         d += elm.Line().right().length(0.3)
-        d += elm.Diode().down().label("U2", loc="right", ofst=0.2, fontsize=8)
-        d += elm.Line().down().toy(ac_com_y)
-        d += elm.Line().left().tox(ac_com[0])
+        d += elm.Diode().down().label("U2", loc="bottom", ofst=0.2, fontsize=8)
+        d += elm.Dot().label("AC_COM", loc="bottom", ofst=0.15, fontsize=8)
 
-        # RX output
-        d += elm.Dot().at((zc_out_x, data_y + 5)).label("VCC", loc="top", ofst=0.1, fontsize=9)
-        d += elm.Resistor().down().label("R7", loc="right", ofst=0.15, fontsize=8).label("22k", loc="left", ofst=0.15, fontsize=8)
+        # RX output (offset right of the ZC output column to avoid overlap)
+        d += elm.Dot().at((16, data_y + 5)).label("VCC", loc="top", ofst=0.1, fontsize=9)
+        d += elm.Resistor().down().label("R7", loc="bottom", ofst=0.15, fontsize=8).label("22k", loc="top", ofst=0.15, fontsize=8)
         rx_out = d.here
         d += elm.Dot()
         d += elm.Line().down().length(1)
@@ -526,7 +523,7 @@ def draw_full_schematic_usb():
         d += elm.Ground()
 
         # ===== DATA TX SECTION =====
-        d += elm.Label().at((3, 7.5)).label("Data Transmit", fontsize=10)
+        d += elm.Label().at((0.5, 3)).label("Data Transmit", fontsize=10)
 
         usb_x = 18
 
@@ -536,8 +533,8 @@ def draw_full_schematic_usb():
         # (Wiring TXD -> R8 -> LED -> GND would hold the bus dominant
         # whenever the port is idle and jam all traffic.)
         d += elm.Dot().at((usb_x - 1.5, 6)).label("VCC", loc="top", ofst=0.1, fontsize=9)
-        d += elm.Resistor().down().length(2).label("R8", loc="right", ofst=0.1, fontsize=8).label("330", loc="left", ofst=0.1, fontsize=8)
-        d += elm.Diode().down().length(2).label("U3", loc="right", ofst=0.2, fontsize=8)
+        d += elm.Resistor().down().length(2).label("R8", loc="bottom", ofst=0.1, fontsize=8).label("330", loc="top", ofst=0.1, fontsize=8)
+        d += elm.Diode().down().length(2).label("U3", loc="bottom", ofst=0.2, fontsize=8)
         d += elm.Line().right().length(1.5)
         d += elm.Dot().label("CH340_TX", loc="right", ofst=0.15, fontsize=9)
 
@@ -551,8 +548,9 @@ def draw_full_schematic_usb():
         d += elm.BjtNpn(circle=True).anchor("collector").scale(0.8)
         tx_gate = d.here
 
-        # Gate pull-down references AC_COM (same node as the MOSFET source)
-        d += elm.Resistor().down().label("R9", loc="right", ofst=0.2, fontsize=8).label("100k", loc="left", ofst=0.2, fontsize=8)
+        # Gate pull-down references AC_COM (same node as the MOSFET source).
+        # Label on the left side only - the right side abuts the barrier.
+        d += elm.Resistor().down().label("R9\n100k", loc="top", ofst=0.2, fontsize=8)
         d += elm.Dot().label("AC_COM", loc="bottom", ofst=0.15, fontsize=9)
 
         # MOSFET
@@ -560,23 +558,22 @@ def draw_full_schematic_usb():
         fet = elm.AnalogNFet(bulk=True).anchor("gate").reverse().scale(0.8).label("Q1", loc="left", ofst=0.4, fontsize=8)
         d += fet
 
-        # MOSFET drain to data
+        # MOSFET drain to data (label left side only - U2's leg is to the right)
         d.push()
         d += elm.Line().at(fet.drain).up().length(1.5)
         drain_node = d.here
-        d += elm.Resistor().up().label("R10", loc="left", ofst=0.2, fontsize=8).label("22Ω", loc="right", ofst=0.2, fontsize=8)
+        d += elm.Resistor().up().label("R10\n22Ω", loc="top", ofst=0.2, fontsize=8)
         d += elm.Line().up().toy(data_y)
         d += elm.Line().left().tox(data[0] + 1.5)
 
         # Flyback diode
-        d += elm.Line().at(drain_node).right().length(2.5)
-        d += elm.Diode().down().label("D2", loc="right", ofst=0.25, fontsize=8)
-        d += elm.Line().down().toy(ac_com_y)
-        d += elm.Line().left().tox(ac_com[0])
+        d += elm.Line().at(drain_node).right().length(1)
+        d += elm.Diode().down().label("D2", loc="bottom", ofst=0.25, fontsize=8)
+        d += elm.Dot().label("AC_COM", loc="bottom", ofst=0.15, fontsize=8)
 
         # MOSFET source to AC_COM
-        d += elm.Line().at(fet.source).down().toy(ac_com_y)
-        d += elm.Line().left().tox(ac_com[0])
+        d += elm.Line().at(fet.source).down().length(1)
+        d += elm.Dot().label("AC_COM", loc="bottom", ofst=0.15, fontsize=8)
 
         # ===== USB SECTION (right side) =====
         d += elm.Label().at((usb_x, 21)).label("USB (J2)", fontsize=11, halign="left")
@@ -588,8 +585,8 @@ def draw_full_schematic_usb():
         d += elm.Dot().at((usb_x + 4, 15)).label("D+", loc="right", ofst=0.15, fontsize=9)
         d += elm.Dot().at((usb_x + 4, 13)).label("GND", loc="right", ofst=0.15, fontsize=9)
 
-        # CH340G chip label
-        d += elm.Label().at((usb_x - 2, 18)).label("U4: CH340G", fontsize=10)
+        # CH340G chip label (kept clear of the R3/R7 columns and power caps)
+        d += elm.Label().at((14.5, 12.5)).label("U4: CH340G", fontsize=10)
 
         # VCC from USB with fuse
         d += elm.Line().at(usb_vbus).left().length(1)
@@ -599,17 +596,19 @@ def draw_full_schematic_usb():
 
         # Bulk capacitor
         d += elm.Line().down().length(1)
-        d += elm.Capacitor().down().label("C1", loc="right", ofst=0.2, fontsize=8).label("10µF", loc="left", ofst=0.2, fontsize=8)
+        d += elm.Capacitor().down().label("C1\n10µF", loc="bottom", ofst=0.2, fontsize=8)
+        d += elm.Ground()
+
+        # Decoupling cap (next to C1, hung from the same rail)
+        d += elm.Line().at(vcc_node).left().length(0.75)
+        c2_top = d.here
+        d += elm.Line().down().length(1)
+        d += elm.Capacitor().down().label("C2\n100nF", loc="top", ofst=0.2, fontsize=8)
         d += elm.Ground()
 
         # VCC distribution
-        d += elm.Line().at(vcc_node).left().length(2)
+        d += elm.Line().at(c2_top).left().length(1.25)
         d += elm.Dot().label("VCC", loc="top", ofst=0.1, fontsize=9)
-
-        # Decoupling cap
-        d += elm.Line().down().length(0.5)
-        d += elm.Capacitor().down().label("C2", loc="right", ofst=0.15, fontsize=8).label("100nF", loc="left", ofst=0.15, fontsize=8)
-        d += elm.Ground()
 
         # Connect optocoupler outputs to CH340. The ZC signal must go to a
         # host-readable STATUS INPUT (CTS, DSR, DCD, or RI). DTR/RTS are
@@ -618,7 +617,7 @@ def draw_full_schematic_usb():
         d += elm.Line().at(zc_out).right().length(2)
         d += elm.Dot().label("CH340_CTS", loc="top", ofst=0.1, fontsize=8)
 
-        d += elm.Line().at(rx_out).right().length(5)
+        d += elm.Line().at(rx_out).right().length(2)
         d += elm.Dot().label("CH340_RX", loc="right", ofst=0.15, fontsize=9)
 
         # Isolation barrier
