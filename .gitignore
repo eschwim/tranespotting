@@ -48,3 +48,6 @@ htmlcov/
 # Claude Code
 .claude/
 CLAUDE.local.md
+
+# skidl ERC reports
+*.erc
