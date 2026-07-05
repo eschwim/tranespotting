@@ -543,11 +543,14 @@ def create_enviracom_pcb(cu, footprints):
     q1 = TO92(brd.DC((hvac_x + 5, 10)).right(90), val="2N7000")
 
     # Resistors - HVAC side
-    r1 = Axial(brd.DC((hvac_x + 8, BOARD_HEIGHT - 8)), val="100k", spacing=10)
-    r2 = Axial(brd.DC((hvac_x + 8, BOARD_HEIGHT - 14)), val="100k", spacing=10)
-    r4 = Axial(brd.DC((hvac_x + 8, BOARD_HEIGHT / 2 + 5)), val="47k", spacing=10)
-    r5 = Axial(brd.DC((hvac_x + 8, BOARD_HEIGHT / 2 - 1)), val="10k", spacing=10)
-    r6 = Axial(brd.DC((hvac_x + 8, BOARD_HEIGHT / 2 - 7)), val="1k", spacing=10)
+    r1 = Axial(brd.DC((hvac_x + 8, BOARD_HEIGHT - 8)), val="4.7k", spacing=10)
+    r2 = Axial(brd.DC((hvac_x + 8, BOARD_HEIGHT - 14)), val="4.7k", spacing=10)
+    r4 = Axial(brd.DC((hvac_x + 8, BOARD_HEIGHT / 2 + 5)), val="4.7k", spacing=10)
+    r5 = Axial(brd.DC((hvac_x + 8, BOARD_HEIGHT / 2 - 1)), val="1.2k", spacing=10)
+    r6 = Axial(brd.DC((hvac_x + 8, BOARD_HEIGHT / 2 - 7)), val="220R", spacing=10)
+    # R9 is the TX gate pull-down: it references AC_COM (same node as Q1's
+    # source), so it lives on the HVAC side of the isolation barrier.
+    r9 = Axial(brd.DC((hvac_x + 8, 4)), val="100k", spacing=10)
     r10 = Axial(brd.DC((hvac_x + 3, 18)), val="22R 1W", spacing=12)
 
     # D1: Zener diode
@@ -555,6 +558,10 @@ def create_enviracom_pcb(cu, footprints):
 
     # D2: Flyback diode
     d2 = Diode(brd.DC((hvac_x + 10, 8)), val="1N4148", spacing=7.5)
+
+    # TODO: place the V_AC supply parts (D3 1N4007, R11 33k, D4 12V Zener,
+    # C1 10uF radial) on the HVAC side - the TX optocoupler's collector runs
+    # from V_AC, not from the MCU rail (isolation).
 
     # MCU Side (right side of board) - 3.3V/5V section
     mcu_x = BOARD_WIDTH - 10
@@ -564,9 +571,8 @@ def create_enviracom_pcb(cu, footprints):
 
     # Resistors - MCU side (pullups)
     r3 = Axial(brd.DC((mcu_x - 8, BOARD_HEIGHT - 10)), val="10k", spacing=10)
-    r7 = Axial(brd.DC((mcu_x - 8, BOARD_HEIGHT / 2 + 3)), val="10k", spacing=10)
+    r7 = Axial(brd.DC((mcu_x - 8, BOARD_HEIGHT / 2 + 3)), val="22k", spacing=10)
     r8 = Axial(brd.DC((mcu_x - 8, 15)), val="330R", spacing=10)
-    r9 = Axial(brd.DC((mcu_x - 8, 8)), val="10k", spacing=10)
 
     # === ISOLATION BARRIER ===
     # Draw isolation slot/barrier marking on silkscreen (as thin rectangle)
@@ -640,11 +646,13 @@ def create_enviracom_usb_pcb(cu, footprints):
     q1 = TO92(brd.DC((hvac_x + 5, 10)).right(90), val="2N7000")
 
     # Resistors - HVAC side
-    r1 = Axial(brd.DC((hvac_x + 8, USB_BOARD_HEIGHT - 8)), val="100k", spacing=10)
-    r2 = Axial(brd.DC((hvac_x + 8, USB_BOARD_HEIGHT - 14)), val="100k", spacing=10)
-    r4 = Axial(brd.DC((hvac_x + 8, USB_BOARD_HEIGHT / 2 + 5)), val="47k", spacing=10)
-    r5 = Axial(brd.DC((hvac_x + 8, USB_BOARD_HEIGHT / 2 - 1)), val="10k", spacing=10)
-    r6 = Axial(brd.DC((hvac_x + 8, USB_BOARD_HEIGHT / 2 - 7)), val="1k", spacing=10)
+    r1 = Axial(brd.DC((hvac_x + 8, USB_BOARD_HEIGHT - 8)), val="4.7k", spacing=10)
+    r2 = Axial(brd.DC((hvac_x + 8, USB_BOARD_HEIGHT - 14)), val="4.7k", spacing=10)
+    r4 = Axial(brd.DC((hvac_x + 8, USB_BOARD_HEIGHT / 2 + 5)), val="4.7k", spacing=10)
+    r5 = Axial(brd.DC((hvac_x + 8, USB_BOARD_HEIGHT / 2 - 1)), val="1.2k", spacing=10)
+    r6 = Axial(brd.DC((hvac_x + 8, USB_BOARD_HEIGHT / 2 - 7)), val="220R", spacing=10)
+    # R9 (TX gate pull-down) references AC_COM - HVAC side of the barrier
+    r9 = Axial(brd.DC((hvac_x + 8, 4)), val="100k", spacing=10)
     r10 = Axial(brd.DC((hvac_x + 3, 18)), val="22R 1W", spacing=12)
 
     # D1: Zener diode
@@ -666,11 +674,15 @@ def create_enviracom_usb_pcb(cu, footprints):
     c1 = Capacitor0805(brd.DC((usb_x - 5, USB_BOARD_HEIGHT - 8)), val="100nF")
     c2 = Capacitor0805(brd.DC((usb_x - 10, USB_BOARD_HEIGHT - 8)), val="10uF")
 
+    # TODO: place X1 (12MHz crystal) + 2x 22pF load caps next to the CH340G -
+    # the CH340G has no internal oscillator (only CH340C/E/N do). Also place
+    # the V_AC supply parts (D3 1N4007, R11 33k, D4 12V Zener, C 10uF) on the
+    # HVAC side for the TX optocoupler collector supply.
+
     # Resistors - USB side (pullups and current limiters)
     r3 = Axial(brd.DC((usb_x - 12, USB_BOARD_HEIGHT - 12)), val="10k", spacing=10)
-    r7 = Axial(brd.DC((usb_x - 12, USB_BOARD_HEIGHT / 2 + 5)), val="10k", spacing=10)
+    r7 = Axial(brd.DC((usb_x - 12, USB_BOARD_HEIGHT / 2 + 5)), val="22k", spacing=10)
     r8 = Axial(brd.DC((usb_x - 12, 15)), val="330R", spacing=10)
-    r9 = Axial(brd.DC((usb_x - 12, 8)), val="10k", spacing=10)
 
     # USB data line resistors (optional EMI filtering)
     r11 = Axial(brd.DC((usb_x, USB_BOARD_HEIGHT / 2 + 8)), val="22R", spacing=7.5)
