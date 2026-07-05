@@ -225,7 +225,7 @@ def main(capture_file: str, export: str, format: str, packet: int, address: str)
     if packet is not None:
         analyzer.show_packet(packet)
     elif address:
-        addr_int = int(address, 16) if address.startswith("0x") else int(address)
+        addr_int = int(address, 16)  # always hex; int() accepts "0x2001" or bare "2001"
         filtered = analyzer.filter_by_address(addr_int)
         console.print(f"\n[bold]Packets involving 0x{addr_int:04X}:[/bold]")
         for i, p in enumerate(filtered[:50]):

@@ -115,7 +115,9 @@ class Packet:
 
     def to_hex(self, separator: str = " ") -> str:
         """Return packet as hex string."""
-        return self.raw.hex(separator)
+        if separator:
+            return self.raw.hex(separator)
+        return self.raw.hex()
 
     def format_header(self) -> str:
         """Format header for display."""

@@ -112,7 +112,7 @@ class BusCapture:
                     elif buffer and (time.time() - last_data_time) > packet_timeout:
                         # We have a complete packet
                         packet_data = bytes(buffer)
-                        timestamp = time.time()
+                        timestamp = last_data_time  # time of last received byte, not gap detection
 
                         self._write_packet(timestamp, packet_data)
                         self._print_packet(timestamp, packet_data)
